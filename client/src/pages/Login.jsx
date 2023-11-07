@@ -1,10 +1,38 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import logo from '../assets/img/logos.png'
 import { useHistory } from 'react-router-dom'
+import { AuthContext } from '../context/authContext';
 
 const Login = () => {
 
     const history = useHistory();
+
+    const [ form, setForm ] = useState({
+        email: 'test@est.ucab.edu.ve',
+        password: '123456',
+    })
+
+    const { login } = useContext(AuthContext)
+
+    const handleChange = ({ target }) => {
+        
+        const { name, value } = target
+
+        setForm({
+            ...form,
+            [name]: value
+        })
+    }
+
+    const onSubmit = async ( ev ) => {
+        ev.preventDefault()
+        
+        const ok = await login( form.email, form.password )
+    }
+
+    const checkFormFields = () => {
+        return ( form.email.length > 0 && form.password.length > 0) ? true : false
+    }
 
     function handleClick() {
         history.push('/auth/register')
@@ -17,14 +45,20 @@ const Login = () => {
                     <h2 class="font-bold text-2xl text-[#002D74]">Iniciar sesión</h2>
                     <p class="text-xs mt-4 text-[#002D74]">Si ya te registraste en ucab-docs, inicia sesión de forma sencilla</p>
 
-                    <form action="" class="flex flex-col gap-4">
-                        <input class="p-2 mt-8 rounded-xl border" type="email" name="email" placeholder="Email" />
+                    <form action="" class="flex flex-col gap-4" onSubmit={ onSubmit }>
+                        <input class="p-2 mt-8 rounded-xl border" type="email" name="email" placeholder="Email" value={ form.email }
+                         onChange={ handleChange }/>
                         <div class="relative">
-                            <input class="p-2 rounded-xl border w-full" type="password" name="password" placeholder="Contraseña" />
+                            <input class="p-2 rounded-xl border w-full" type="password" name="password" placeholder="Contraseña" value={ form.password }
+                            onChange={ handleChange }/>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-eye absolute top-1/2 right-3 -translate-y-1/2" viewBox="0 0 16 16">
                             </svg>
                         </div>
-                        <button class="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300">Ingresa</button>
+                        <button 
+                            class="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300"
+                            type='submit'
+                            disabled={ !checkFormFields() }
+                        >Ingresa</button>
                     </form>
 
                     <div class="mt-6 grid grid-cols-3 items-center text-gray-400">
