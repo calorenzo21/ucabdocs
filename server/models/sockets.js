@@ -38,16 +38,20 @@ class Sockets {
                 socket.join( documentID )
                 socket.broadcast.to( documentID ).emit("user-connected", name)
                 socket.emit("load-document", document.data)
-
+                
                 socket.on('send-changes', (delta) => {
                     socket.broadcast.to( documentID ).emit("receive-changes", delta)
                 })
-
+                
+                
+                
                 socket.on('save-document', async ( data ) => {
                     console.log(data)
                     await Document.findByIdAndUpdate( documentID, { data } )
                 })
-
+                
+                socket.to(documentID).emit("user-joined");
+                userSockets[socket.id] = socket;
             });
 
             socket.on('disconnect', () => {
@@ -57,7 +61,7 @@ class Sockets {
         });
     }
 
-
+    
 }
 
 
