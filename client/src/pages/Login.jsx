@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import logo from '../assets/img/logos.png'
 import { useHistory } from 'react-router-dom'
 import { AuthContext } from '../context/authContext';
+import Swal from 'sweetalert2'
 
 const Login = () => {
 
@@ -26,8 +27,31 @@ const Login = () => {
 
     const onSubmit = async (ev) => {
         ev.preventDefault()
+        
+        const ok = await login( form.email, form.password )
 
-        const ok = await login(form.email, form.password)
+        if ( !ok ){
+            Swal.fire({
+                title: 'Error', 
+                text: 'Verifique el usuario y contraseña', 
+                icon: 'error',
+                confirmButtonColor: '#002D74',
+                width: '410px'
+            })
+            return 
+        }
+
+        if ( ok ){
+            Swal.fire({
+                title: 'Bienvenido', 
+                text: 'Inicio de sesión exitoso ', 
+                icon: 'success',
+                confirmButtonColor: '#002D74',
+                width: '410px'
+            })
+        }
+
+
     }
 
     const checkFormFields = () => {

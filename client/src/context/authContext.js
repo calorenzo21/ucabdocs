@@ -1,5 +1,5 @@
 import React, { Children, createContext, useCallback, useState } from "react";
-import { fetchSinToken } from "../helpers/fetch";
+import { fetchConToken, fetchSinToken } from "../helpers/fetch";
 
 export const AuthContext = createContext()
 
@@ -7,7 +7,7 @@ const initialState = {
     uid: null,
     checking: true,
     logged: false,
-    username: null,
+    name: null,
     email: null
 }
 
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
                 uid: resp.user.uid,
                 checking: false,
                 logged: true,
-                username: resp.user.username,
+                name: resp.user.name,
                 email: resp.user.email
             })
         }
@@ -35,27 +35,70 @@ export const AuthProvider = ({ children }) => {
         return resp.ok
     }
 
-    const register = async ( username, email, password ) => {
+    const register = async ( name, email, password ) => {
         
-        const resp = await fetchSinToken('register', { email, password, username }, 'POST')
+        const resp = await fetchSinToken('register', { email, password, name }, 'POST')
         console.log(resp)
 
         if ( resp.ok ) {
             localStorage.setItem( 'token', resp.token )
-
+            console.log('Entro')
             setAuth({
                 uid: resp.user.uid,
                 checking: false,
                 logged: true,
-                username: resp.user.username,
+                name: resp.user.name,
                 email: resp.user.email
+            })
+
+            return true
+        }
+
+        return resp.msg
+    }
+
+    const checkToken = useCallback( async () => {
+
+        const token = localStorage.getItem('token')
+
+        if ( !token ) {
+            return setAuth({
+                uid: null,
+                checking: false,
+                logged: false,
+                name: null,
+                email: null 
             })
         }
 
-        return resp.ok
-    }
+        const resp = await fetchConToken('renew')
 
-    const verificarToken = useCallback( () => {
+        if ( resp.ok ){
+            localStorage.setItem('token', resp.token )
+           
+            const { user } = resp
+
+            setAuth({
+                uid: user.uid,
+                checking: false,
+                logged: true,
+                name: user.name,
+                email: user.email 
+            })
+
+            return true
+
+        } else {
+            setAuth({
+                uid: null,
+                checking: false,
+                logged: false,
+                name: null,
+                email: null 
+            })
+
+            return false
+        }
 
     }, [])
 
@@ -68,7 +111,7 @@ export const AuthProvider = ({ children }) => {
             auth,
             login,
             register,
-            verificarToken,
+            checkToken,
             logout
         }}>
             { children }

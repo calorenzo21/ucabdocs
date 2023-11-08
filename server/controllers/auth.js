@@ -32,6 +32,7 @@ const registerUser = async (req, res) => {
         const token = await generarJWT( user.id )
 
         res.json({
+            ok: true,
             user,
             token
         })

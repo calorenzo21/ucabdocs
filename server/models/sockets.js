@@ -1,5 +1,7 @@
+const { connectedUser } = require('../controllers/sockets')
+const { checkJWT } = require('../helpers/jwt')
 const Document = require('../models/document')
-const userSockets = {};
+
 const findOrCreateDocument = async ( id ) => {
     if (id == null) return
     
@@ -19,15 +21,22 @@ class Sockets {
 
     socketEvents() {
         // On connection
-        this.io.on('connection', ( socket ) => {
-            
-            
-            console.log('Ingreso el usuario con el socket ID: ',socket.id)
+        this.io.on('connection', async ( socket ) => {
+
+            const [ valido, uid ] = checkJWT( socket.handshake.query['x-token'])
+
+            if ( !valido ){
+                console.log('socket no identificado')
+                return socket.disconnect()
+            }
+
+            const { name } = await connectedUser(uid)
             
             socket.on('get-document', async ( documentID ) => {
                 
                 const document = await findOrCreateDocument( documentID )
                 socket.join( documentID )
+                socket.broadcast.to( documentID ).emit("user-connected", name)
                 socket.emit("load-document", document.data)
                 
                 socket.on('send-changes', (delta) => {
@@ -44,6 +53,10 @@ class Sockets {
                 socket.to(documentID).emit("user-joined");
                 userSockets[socket.id] = socket;
             });
+
+            socket.on('disconnect', () => {
+                console.log('Cliente desconectado')
+            })
             
         });
     }
