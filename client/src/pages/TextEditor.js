@@ -102,6 +102,16 @@ export default function TextEditor() {
 
   }, [socket, quill])
 
+  useEffect(() => {
+    
+    if (socket == null || quill == null) return
+
+    socket.on('user-connected', ( name ) => {
+      console.log(name,' se ha conectado al documento')
+    })
+
+  }, [socket])
+
   return (
     <>
       <div className="container" ref={wrapperRef}></div>

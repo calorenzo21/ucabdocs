@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import {
     BrowserRouter as Router,
     Switch,
@@ -11,15 +11,38 @@ import AuthRouter from './AuthRouter';
 import Welcome from '../pages/Welcome'
 import AbrirDoc from '../pages/AbrirDoc';
 import CrearDoc from '../pages/CrearDoc';
+import { AuthContext } from '../context/authContext';
+import { PublicRoute } from './PublicRoute';
+import { PrivateRoute } from './PrivateRoute';
 
 const AppRouter = () => {
+    
+    const { auth, checkToken } = useContext(AuthContext)
+
+    useEffect( () => {
+        checkToken()
+    }, [])
+    
+    if ( auth.checking ){
+        return <h1>Espere por favor</h1>
+    }
+
     return (
         <Router>
             <div>
                 <Switch>
-                    <Route path="/auth" component={AuthRouter} />
+                    <PublicRoute 
+                        isAuthenticated={ auth.logged }
+                        path="/auth"
+                        component={ AuthRouter }
+                    />
+                    <PrivateRoute 
+                        isAuthenticated={ auth.logged }
+                        exact
+                        path="/"
+                        component={ Welcome }
+                    />
                     <Route path="/documents/:id" component={TextEditor} />
-                    <Route exact path="/welcome" component={Welcome} />
                     <Route exact path="/abrir" component={AbrirDoc} />
                     <Route path="/" exact>
                         <Redirect to={`/documents/${uuidV4()}`} />

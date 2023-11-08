@@ -1,13 +1,14 @@
 import React, { useContext, useState } from 'react'
 import logo from '../assets/img/logos.png'
 import { AuthContext } from '../context/authContext'
+import Swal from 'sweetalert2'
 
 const Register = () => {
     
     const [ form, setForm ] = useState({
         email: '',
         password: '',
-        username: ''
+        name: ''
     })
 
     const { register } = useContext(AuthContext)
@@ -25,11 +26,37 @@ const Register = () => {
     const onSubmit = async ( ev ) => {
         ev.preventDefault()
         
-        const ok = await register( form.username, form.email, form.password )
+        const msg = await register( form.name, form.email, form.password )
+        console.log(msg)
+
+        if ( msg !== true ){
+            Swal.fire({
+                title: 'Error', 
+                text: msg, 
+                icon: 'error',
+                confirmButtonColor: '#002D74',
+                width: '410px'
+            })
+            return
+        }
+
+        if ( msg === true ) {
+            Swal.fire({
+                title: 'Bienvenido', 
+                text: 'Inicio de sesión exitoso ', 
+                icon: 'success',
+                confirmButtonColor: '#002D74',
+                width: '410px'
+            })
+        }
     }
 
     const checkFormFields = () => {
-        return ( form.email.length > 0 && form.password.length > 0 && form.username.length > 0) ? true : false
+        return ( 
+            form.email.length > 0 && 
+            form.password.length > 0 && 
+            form.name.length > 0
+        ) ? true : false
     }
     
     return (
@@ -39,8 +66,8 @@ const Register = () => {
                     <div class="md:w-1/2 px-8 md:px-16">
                         <h2 class="font-bold text-2xl text-[#002D74]">Registro</h2>
                         <form action="" class="flex flex-col gap-4" onSubmit={ onSubmit }>
-                            <input class="p-2 mt-8 rounded-xl border" type="" name="username" placeholder="Nombre de Usuario" 
-                                    value={ form.username } 
+                            <input class="p-2 mt-8 rounded-xl border" type="" name="name" placeholder="Nombre de Usuario" 
+                                    value={ form.name } 
                                     onChange={ handleChange }
                             />
                             <input class="p-2 mt- rounded-xl border" type="email" name="email" placeholder="Email" 
