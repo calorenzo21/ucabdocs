@@ -7,7 +7,7 @@ const Login = () => {
 
     const history = useHistory();
 
-    const [ form, setForm ] = useState({
+    const [form, setForm] = useState({
         email: 'test@est.ucab.edu.ve',
         password: '123456',
     })
@@ -15,7 +15,7 @@ const Login = () => {
     const { login } = useContext(AuthContext)
 
     const handleChange = ({ target }) => {
-        
+
         const { name, value } = target
 
         setForm({
@@ -24,14 +24,14 @@ const Login = () => {
         })
     }
 
-    const onSubmit = async ( ev ) => {
+    const onSubmit = async (ev) => {
         ev.preventDefault()
-        
-        const ok = await login( form.email, form.password )
+
+        const ok = await login(form.email, form.password)
     }
 
     const checkFormFields = () => {
-        return ( form.email.length > 0 && form.password.length > 0) ? true : false
+        return (form.email.length > 0 && form.password.length > 0) ? true : false
     }
 
     function handleClick() {
@@ -45,19 +45,19 @@ const Login = () => {
                     <h2 class="font-bold text-2xl text-[#002D74]">Iniciar sesión</h2>
                     <p class="text-xs mt-4 text-[#002D74]">Si ya te registraste en ucab-docs, inicia sesión de forma sencilla</p>
 
-                    <form action="" class="flex flex-col gap-4" onSubmit={ onSubmit }>
-                        <input class="p-2 mt-8 rounded-xl border" type="email" name="email" placeholder="Email" value={ form.email }
-                         onChange={ handleChange }/>
+                    <form action="" class="flex flex-col gap-4" onSubmit={onSubmit}>
+                        <input class="p-2 mt-8 rounded-xl border" type="email" name="email" placeholder="Email" value={form.email}
+                            onChange={handleChange} />
                         <div class="relative">
-                            <input class="p-2 rounded-xl border w-full" type="password" name="password" placeholder="Contraseña" value={ form.password }
-                            onChange={ handleChange }/>
+                            <input class="p-2 rounded-xl border w-full" type="password" name="password" placeholder="Contraseña" value={form.password}
+                                onChange={handleChange} />
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-eye absolute top-1/2 right-3 -translate-y-1/2" viewBox="0 0 16 16">
                             </svg>
                         </div>
-                        <button 
+                        <button
                             class="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300"
                             type='submit'
-                            disabled={ !checkFormFields() }
+                            disabled={!checkFormFields()}
                         >Ingresa</button>
                     </form>
 
@@ -83,11 +83,11 @@ const Login = () => {
 
                     <div class="mt-3 text-xs flex justify-between items-center text-[#002D74]">
                         <p>No tienes una cuenta?</p>
-                        <button onClick={handleClick} class="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300">Registrate</button>
+                        <button onClick={handleClick} class="py-2 px-5 bg-white border border-gray-600 rounded-xl hover:scale-110 duration-300">Registrate</button>
                     </div>
                 </div>
                 <div class="md:block hidden w-1/2">
-                    <img class="rounded-2xl" src={logo} />
+                    <img class="rounded-2xl" alt="logo" src={logo} />
                 </div>
             </div>
         </section>

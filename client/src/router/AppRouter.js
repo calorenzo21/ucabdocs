@@ -11,6 +11,7 @@ import AuthRouter from './AuthRouter';
 import Welcome from '../pages/Welcome'
 import AbrirDoc from '../pages/AbrirDoc';
 import CrearDoc from '../pages/CrearDoc';
+import Invitacion from '../pages/Invitacion';
 
 const AppRouter = () => {
     return (
@@ -20,8 +21,10 @@ const AppRouter = () => {
                     <Route path="/auth" component={AuthRouter} />
                     <Route path="/documents/:id" component={TextEditor} />
                     <Route exact path="/welcome" component={Welcome} />
-                    <Route exact path="/abrir" component={AbrirDoc} />
-                    <Route path="/" exact>
+                    <Route exact path="/abrir-doc" component={AbrirDoc} />
+                    <Route exact path="/crear-doc" component={CrearDoc} />
+                    <Route exact path="/invitacion" component={Invitacion} />
+                    <Route path="/nuevo-doc" exact>
                         <Redirect to={`/documents/${uuidV4()}`} />
                     </Route>
                     <Redirect to="/auth" />
