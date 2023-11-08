@@ -28,16 +28,15 @@ export default function TextEditor() {
   const { socket } = useContext(SocketContext)
   const [quill, setQuill] = useState()
 
-  useEffect(() => {
+  // useEffect(() => {
   
-    socket.on("user-joined", () => {
-      audio.play(); // Reproducir el sonido al unirse un usuario
-    });
+    // socket.on("user-joined", () => {
+    //   audio.play(); // Reproducir el sonido al unirse un usuario
+    // });
   
-    }, [])
+    // }, [])
 
   const wrapperRef = useCallback(wrapper => {
-    
     if (wrapper == null) return
 
     wrapper.innerHTML = ""
@@ -62,7 +61,8 @@ export default function TextEditor() {
     
     if (socket == null || quill == null) return
 
-    socket.once("load-document", document => {
+    socket.on("load-document", document => {
+      console.log('Entro')
       quill.setContents(document)
       quill.enable()
     })
@@ -114,20 +114,19 @@ export default function TextEditor() {
 
   }, [socket, quill])
 
-  useEffect(() => {
+  // useEffect(() => {
     
-    if (socket == null || quill == null) return
+  //   if (socket == null || quill == null) return
 
-    socket.on('user-connected', ( name ) => {
-      console.log(name,' se ha conectado al documento')
-    })
+  //   socket.on('user-connected', ( name ) => {
+  //     console.log(name,' se ha conectado al documento')
+  //   })
 
-  }, [socket])
+  // }, [socket])
 
   return (
     <>
       <div className="container" ref={wrapperRef}></div>
-      <div id="si">Hola Putica Roja</div>
     </>
   )
-}
+  }

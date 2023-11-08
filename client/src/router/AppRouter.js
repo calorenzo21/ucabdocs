@@ -10,7 +10,6 @@ import TextEditor from '../pages/TextEditor';
 import AuthRouter from './AuthRouter';
 import Welcome from '../pages/Welcome'
 import AbrirDoc from '../pages/AbrirDoc';
-import CrearDoc from '../pages/CrearDoc';
 import Invitacion from '../pages/Invitacion';
 import { AuthContext } from '../context/authContext';
 import { PublicRoute } from './PublicRoute';
@@ -43,17 +42,17 @@ const AppRouter = () => {
                         path="/"
                         component={ Welcome }
                     />
-                    <Route path="/documents/:id" component={TextEditor} />
-                    <Route exact path="/abrir" component={AbrirDoc} />
-                    <Route path="/" exact/>
-                    <Route exact path="/welcome" component={Welcome} />
-                    <Route exact path="/abrir-doc" component={AbrirDoc} />
-                    <Route exact path="/crear-doc" component={CrearDoc} />
-                    <Route exact path="/invitacion" component={Invitacion} />
+
+
                     <Route path="/nuevo-doc" exact>
                         <Redirect to={`/documents/${uuidV4()}`} />
                     </Route>
-                    <Redirect to="/auth" />
+
+                    <Route exact path="/invitacion" component={Invitacion} />
+                    <Route path="/documents/:id" component={TextEditor} />
+                    <Route exact path="/abrir" component={AbrirDoc} />
+                    <Route exact path="/abrir-doc" component={AbrirDoc} />
+                
                 </Switch>
             </div>
         </Router>

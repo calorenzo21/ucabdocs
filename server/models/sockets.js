@@ -22,36 +22,21 @@ class Sockets {
     socketEvents() {
         // On connection
         this.io.on('connection', async ( socket ) => {
-
-            const [ valido, uid ] = checkJWT( socket.handshake.query['x-token'])
-
-            if ( !valido ){
-                console.log('socket no identificado')
-                return socket.disconnect()
-            }
-
-            const { name } = await connectedUser(uid)
             
             socket.on('get-document', async ( documentID ) => {
-                
                 const document = await findOrCreateDocument( documentID )
                 socket.join( documentID )
-                socket.broadcast.to( documentID ).emit("user-connected", name)
                 socket.emit("load-document", document.data)
                 
                 socket.on('send-changes', (delta) => {
                     socket.broadcast.to( documentID ).emit("receive-changes", delta)
                 })
                 
-                
-                
                 socket.on('save-document', async ( data ) => {
                     console.log(data)
                     await Document.findByIdAndUpdate( documentID, { data } )
                 })
-                
-                socket.to(documentID).emit("user-joined");
-                userSockets[socket.id] = socket;
+            
             });
 
             socket.on('disconnect', () => {
